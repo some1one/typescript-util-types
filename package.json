@@ -1,5 +1,5 @@
 {
-    "name": "utility-types",
+    "name": "typescript-util-types",
     "version": "1.0.0",
     "description": "A collection of commonly used types that are not built-ins",
     "author": "Piotr Witek <piotrek.witek@gmail.com> (http://piotrwitek.github.io)",
