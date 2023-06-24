@@ -1,13 +1,21 @@
 //used some types from https://github.com/piotrwitek/utility-types
 type ObjectKey = string | number | symbol;
+type AnyObject = Record<ObjectKey, any> & object & {};
+type UnknownObject = Record<ObjectKey, unknown> & object;
 type Constructor<T = any> = new (...args: any[]) => T;
+type WithPrototype<C extends Function, P extends {} | object | AnyObject> = C & P & { prototype?: P };
+type Class<T extends _ClassFunction<T> | Constructor<T>> = T & _ClassFunction<T> & Constructor<T> & WithPrototype<T & (_ClassFunction<T> | Constructor<T>), T> & Object;
+type _ClassFunction<T extends _ClassFunction<T> | Constructor<T>> = (...args: any[]) => Class<T>;
+type RecordClass<T extends _ClassFunction<T> | Constructor<T>> = Class<T> & AsRecord<T> & UnknownObject;
 type AnyFunction = (...args: unknown[]) => unknown;
+type UnknownFunction = (...args: unknown[]) => unknown;
 type MethodNames<T> = {
     [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T];
 type PropertyNames<T> = {
     [K in keyof T]-?: T[K] extends Function ? never : K;
 }[keyof T];
+type AsRecord<T> = { [K in keyof T]: T[K] };
 /** Excludes all props of U from T for use in other types. Use OmitAll if you want to create a type like this.  */
 type ExcludeAll<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 /** An exclusive type that one of T or U but never both of them*/
