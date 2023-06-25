@@ -1,19 +1,18 @@
 //used some types from https://github.com/piotrwitek/utility-types
 type ObjectKey = string | number | symbol;
-type AnyObject = Record<ObjectKey, any> & object & {};
-type UnknownObject = Record<ObjectKey, unknown> & object;
-type Constructor<T = any> = new (...args: any[]) => T;
-type WithAnyPrototype<C extends Function> = C & { prototype: any };
-type WithPrototype<C extends Function, P extends {} | object | AnyObject = C> = C & P & { prototype?: P };
-type Class<T extends _ClassFunction<T> | Constructor<T>> = T & _ClassFunction<T> & Constructor<T> & WithPrototype<T & (_ClassFunction<T> | Constructor<T>), T> & Object;
+type AnyObject = Record<ObjectKey, any> & {};
+type UnknownObject = Record<ObjectKey, unknown> & {};
+type Constructor<T extends Function & {} = AnyObject & Function> = new (...args: any[]) => T;
+type WithPrototype<C extends {} = {}, P extends {} = C> = C & { prototype: P };
+type Class<T extends _ClassFunction<T> | Constructor<T>> = T & _ClassFunction<T> & Constructor<T> & WithPrototype<T & (_ClassFunction<T> | Constructor<T>) & object, T> & object;
 type _ClassFunction<T extends _ClassFunction<T> | Constructor<T>> = (...args: any[]) => Class<T>;
 type RecordClass<T extends _ClassFunction<T> | Constructor<T>> = Class<T> & AsRecord<T> & UnknownObject;
-type AnyFunction = (...args: unknown[]) => unknown;
+type AnyFunction = (...args: any[]) => any;
 type UnknownFunction = (...args: unknown[]) => unknown;
-type MethodNames<T> = {
+type MethodName<T> = {
     [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T];
-type PropertyNames<T> = {
+type PropertyName<T> = {
     [K in keyof T]-?: T[K] extends Function ? never : K;
 }[keyof T];
 type AsRecord<T> = { [K in keyof T]: T[K] };
@@ -54,7 +53,7 @@ type NonNullish<T> = T extends Nullish ? never : T;
  *   // Expect: "bar"
  *   type Keys = MutableKeys<Props>;
  */
-export type MutableKeys<T extends object> = {
+type MutableKeys<T extends object> = {
     [P in keyof T]-?: IfEquals<
       { [Q in P]: T[P] },
       { -readonly [Q in P]: T[P] },
@@ -72,7 +71,7 @@ export type MutableKeys<T extends object> = {
  *   // Expect: "foo"
  *   type Keys = ReadonlyKeys<Props>;
  */
-export type ReadonlyKeys<T extends object> = {
+type ReadonlyKeys<T extends object> = {
     [P in keyof T]-?: IfEquals<
       { [Q in P]: T[P] },
       { -readonly [Q in P]: T[P] },
@@ -96,7 +95,7 @@ export type ReadonlyKeys<T extends object> = {
  *   // Expect: "req" | "reqUndef"
  *   type Keys = RequiredKeys<Props>;
  */
-export type RequiredKeys<T> = {
+type RequiredKeys<T> = {
     [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
   }[keyof T];
 /**
@@ -109,6 +108,6 @@ export type RequiredKeys<T> = {
  *   // Expect: "opt" | "optUndef"
  *   type Keys = OptionalKeys<Props>;
  */
-export type OptionalKeys<T> = {
+type OptionalKeys<T> = {
     [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
   }[keyof T];
