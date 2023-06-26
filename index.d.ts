@@ -1,36 +1,36 @@
 //used some types from https://github.com/piotrwitek/utility-types
-type ObjectKey = string | number | symbol;
-type AnyObject = Record<ObjectKey, any> & {};
-type UnknownObject = Record<ObjectKey, unknown> & {};
-type Constructor<T extends Function & {} = AnyObject & Function> = new (...args: any[]) => T;
-type WithPrototype<C extends {} = {}, P extends {} = C> = C & { prototype: P };
-type Class<T extends _ClassFunction<T> | Constructor<T>> = T & _ClassFunction<T> & Constructor<T> & WithPrototype<T & (_ClassFunction<T> | Constructor<T>) & object, T> & object;
-type _ClassFunction<T extends _ClassFunction<T> | Constructor<T>> = (...args: any[]) => Class<T>;
-type RecordClass<T extends _ClassFunction<T> | Constructor<T>> = Class<T> & AsRecord<T> & UnknownObject;
-type AnyFunction = (...args: any[]) => any;
-type UnknownFunction = (...args: unknown[]) => unknown;
-type MethodName<T> = {
+export type ObjectKey = string | number | symbol;
+export type AnyObject = Record<ObjectKey, any> & {};
+export type UnknownObject = Record<ObjectKey, unknown> & {};
+export type Constructor<T extends Function & {} = AnyObject & Function> = new (...args: any[]) => T;
+export type WithPrototype<C extends {} = {}, P extends {} = C> = C & { prototype: P };
+export type Class<T extends _ClassFunction<T> | Constructor<T>> = T & _ClassFunction<T> & Constructor<T> & WithPrototype<T & (_ClassFunction<T> | Constructor<T>) & object, T> & object;
+export type _ClassFunction<T extends _ClassFunction<T> | Constructor<T>> = (...args: any[]) => Class<T>;
+export type RecordClass<T extends _ClassFunction<T> | Constructor<T>> = Class<T> & AsRecord<T> & UnknownObject;
+export type AnyFunction = (...args: any[]) => any;
+export type UnknownFunction = (...args: unknown[]) => unknown;
+export type MethodName<T> = {
     [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T];
-type PropertyName<T> = {
+export type PropertyName<T> = {
     [K in keyof T]-?: T[K] extends Function ? never : K;
 }[keyof T];
-type AsRecord<T> = { [K in keyof T]: T[K] };
+export type AsRecord<T> = { [K in keyof T]: T[K] };
 /** Excludes all props of U from T for use in other types. Use OmitAll if you want to create a type like this.  */
-type ExcludeAll<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
+export type ExcludeAll<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
 /** An exclusive type that one of T or U but never both of them*/
-type OneOf<T, U> = (ExcludeAll<T, U> & U) | (ExcludeAll<U, T> & T);
+export type OneOf<T, U> = (ExcludeAll<T, U> & U) | (ExcludeAll<U, T> & T);
 /** A type that is equivalent to T without the props from K */
-type OmitAll<T, K> = Pick<T, Exclude<keyof T, K>>;
+export type OmitAll<T, K> = Pick<T, Exclude<keyof T, K>>;
 /** A type that represents the props from A that or not in B & the types from B that are not in A */
-type Diff<A, B> = Exclude<A | B, A & B>;
+export type Diff<A, B> = Exclude<A | B, A & B>;
 /** A strongly type record object. ie only existing key names are allowed and the return the appropriate type. */
-type TypedRecord<K extends ObjectKey, V> = { [P in K]: V };
+export type TypedRecord<K extends ObjectKey, V> = { [P in K]: V };
 /**  A type representing the union of values in a const array (["value"] as const)*/
-type ArrayValues<T extends unknown[]> = T[number];
+export type ArrayValues<T extends unknown[]> = T[number];
 /** The value type of prop or index K of T */
-type ValueType<T extends { [P in K & any]: any }, K extends keyof T | number> = T[K];
-type Primitive =
+export type ValueType<T extends { [P in K & any]: any }, K extends keyof T | number> = T[K];
+export type Primitive =
   | string
   | number
   | bigint
@@ -38,10 +38,10 @@ type Primitive =
   | symbol
   | null
   | undefined;
-type Void = void | undefined;
-type Falsy = false | '' | 0 | null | undefined;
-type Nullish = null | undefined;
-type NonNullish<T> = T extends Nullish ? never : T;
+export type Void = void | undefined;
+export type Falsy = false | '' | 0 | null | undefined;
+export type Nullish = null | undefined;
+export type NonNullish<T> = T extends Nullish ? never : T;
 /**
  * MutableKeys
  * @desc Get union type of keys that are mutable in object type `T`
@@ -53,7 +53,7 @@ type NonNullish<T> = T extends Nullish ? never : T;
  *   // Expect: "bar"
  *   type Keys = MutableKeys<Props>;
  */
-type MutableKeys<T extends object> = {
+export type MutableKeys<T extends object> = {
     [P in keyof T]-?: IfEquals<
       { [Q in P]: T[P] },
       { -readonly [Q in P]: T[P] },
@@ -71,7 +71,7 @@ type MutableKeys<T extends object> = {
  *   // Expect: "foo"
  *   type Keys = ReadonlyKeys<Props>;
  */
-type ReadonlyKeys<T extends object> = {
+export type ReadonlyKeys<T extends object> = {
     [P in keyof T]-?: IfEquals<
       { [Q in P]: T[P] },
       { -readonly [Q in P]: T[P] },
@@ -80,7 +80,7 @@ type ReadonlyKeys<T extends object> = {
     >;
   }[keyof T];
   
-  type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <
+export type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <
     T
   >() => T extends Y ? 1 : 2
     ? A
@@ -95,7 +95,7 @@ type ReadonlyKeys<T extends object> = {
  *   // Expect: "req" | "reqUndef"
  *   type Keys = RequiredKeys<Props>;
  */
-type RequiredKeys<T> = {
+export type RequiredKeys<T> = {
     [K in keyof T]-?: {} extends Pick<T, K> ? never : K;
   }[keyof T];
 /**
@@ -108,6 +108,6 @@ type RequiredKeys<T> = {
  *   // Expect: "opt" | "optUndef"
  *   type Keys = OptionalKeys<Props>;
  */
-type OptionalKeys<T> = {
+export type OptionalKeys<T> = {
     [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
   }[keyof T];
