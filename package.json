@@ -12,6 +12,6 @@
         "types"
     ],
     "scripts": {
-        "prepublishOnly": "npm version patch & timeout /T 1 /NOWAIT"
+        "prepublishOnly": "npm version patch & timeout 1 /NOBREAK"
     }
 }
