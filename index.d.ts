@@ -11,7 +11,7 @@ export type RecordClass<T extends _ClassFunction<T> | Constructor<T>> = Class<T>
 export type AnyFunction = (...args: any[]) => any;
 export type UnknownFunction = (...args: unknown[]) => unknown;
 export type RecordsStartWith<T, S extends string> = {
-    [K in keyof T as K extends `${S}${infer R}` ? K : never]: T[K]
+    [K in keyof T as K extends `${S}${infer R}` ? R : never]: T[K]
 }
 export type RecordsRemovePrefix<T, P extends string> = {
     [K in keyof T as K extends `${P}${infer R}` ? R : K]: T[K]
@@ -22,11 +22,13 @@ export type RecordsRemovePrefixAndUcapitalize<T, P extends string> = {
 export type FunctionNames<T> = {
     [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T];
-export type GetterFunctions<T> = RecordsStartWith<FunctionNames<T>, 'get'>;
-export type GetterNames<T>  = RecordsRemovePrefixAndUcapitalize<GetterFunctions<T>, 'get'>;
 export type PropertyNames<T> = {
-    [K in keyof T]-?: T[K] extends Function ? never : K;
+  [K in keyof T]-?: T[K] extends Function ? never : K;
 }[keyof T];
+export type RecordFunctions<T> = Pick<T, FunctionNames<T>>;
+export type RecordProperties<T> = Pick<T, PropertyNames<T>>;
+export type GetterFunctions<T> = RecordFunctions<RecordsStartWith<T, 'get'>>;
+export type GetterNames<T> = FunctionNames<RecordsRemovePrefixAndUcapitalize<GetterFunctions<T>, 'get'>>;
 export type AsRecord<T> = { [K in keyof T]: T[K] };
 /** Excludes all props of U from T for use in other types. Use OmitAll if you want to create a type like this.  */
 export type ExcludeAll<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
