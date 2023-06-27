@@ -12,6 +12,6 @@
         "types"
     ],
     "scripts": {
-        "prepublishOnly": "npm run patch"
+        "prepublishOnly": "npm version patch"
     }
 }
