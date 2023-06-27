@@ -1,7 +1,6 @@
 //used some types from https://github.com/piotrwitek/utility-types
-export type ObjectKey = string | number | symbol;
-export type AnyObject = Record<ObjectKey, any> & {};
-export type UnknownObject = Record<ObjectKey, unknown> & {};
+export type AnyObject = Record<PropertyKey, any> & {};
+export type UnknownObject = Record<PropertyKey, unknown> & {};
 export type Constructor<T extends Function & {} = AnyObject & Function> = new (...args: any[]) => T;
 export type WithPrototype<C extends {} = {}, P extends {} = C> = C & { prototype: P };
 export type Class<T extends _ClassFunction<T> | Constructor<T>> = T & _ClassFunction<T> & Constructor<T> & WithPrototype<T & (_ClassFunction<T> | Constructor<T>) & object, T> & object;
@@ -9,10 +8,14 @@ export type _ClassFunction<T extends _ClassFunction<T> | Constructor<T>> = (...a
 export type RecordClass<T extends _ClassFunction<T> | Constructor<T>> = Class<T> & AsRecord<T> & UnknownObject;
 export type AnyFunction = (...args: any[]) => any;
 export type UnknownFunction = (...args: unknown[]) => unknown;
-export type MethodName<T> = {
+export type RecordsStartWith<T, S extends string> = {
+    [K in keyof T as K extends `${S}${infer R}` ? K : never]: T[K]
+}
+export type FunctionNames<T> = {
     [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T];
-export type PropertyName<T> = {
+export type GetterFunctions<T> = RecordsStartWith<FunctionNames<T>, 'get'>;
+export type PropertyNames<T> = {
     [K in keyof T]-?: T[K] extends Function ? never : K;
 }[keyof T];
 export type AsRecord<T> = { [K in keyof T]: T[K] };
@@ -24,8 +27,6 @@ export type OneOf<T, U> = (ExcludeAll<T, U> & U) | (ExcludeAll<U, T> & T);
 export type OmitAll<T, K> = Pick<T, Exclude<keyof T, K>>;
 /** A type that represents the props from A that or not in B & the types from B that are not in A */
 export type Diff<A, B> = Exclude<A | B, A & B>;
-/** A strongly type record object. ie only existing key names are allowed and the return the appropriate type. */
-export type TypedRecord<K extends ObjectKey, V> = { [P in K]: V };
 /**  A type representing the union of values in a const array (["value"] as const)*/
 export type ArrayValues<T extends unknown[]> = T[number];
 /** The value type of prop or index K of T */
