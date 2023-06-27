@@ -1,6 +1,6 @@
 {
     "name": "typescript-util-types",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "description": "A collection of commonly used types that are not built-ins",
     "author": "some1one <justin9490@gmail.com>",
     "repository": "https://github.com/some1one/typescript-util-types",
