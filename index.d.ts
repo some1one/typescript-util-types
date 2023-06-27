@@ -11,10 +11,17 @@ export type UnknownFunction = (...args: unknown[]) => unknown;
 export type RecordsStartWith<T, S extends string> = {
     [K in keyof T as K extends `${S}${infer R}` ? K : never]: T[K]
 }
+export type RecordsRemovePrefix<T, P extends string> = {
+    [K in keyof T as K extends `${P}${infer R}` ? R : K]: T[K]
+}
+export type RecordsRemovePrefixAndUcapitalize<T, P extends string> = {
+    [K in keyof T as K extends `${P}${infer R}` ? Uncapitalize<R> : K]: T[K]
+}
 export type FunctionNames<T> = {
     [K in keyof T]: T[K] extends Function ? K : never;
 }[keyof T];
 export type GetterFunctions<T> = RecordsStartWith<FunctionNames<T>, 'get'>;
+export type GetterNames<T>  = RecordsRemovePrefixAndUcapitalize<GetterFunctions<T>, 'get'>;
 export type PropertyNames<T> = {
     [K in keyof T]-?: T[K] extends Function ? never : K;
 }[keyof T];
