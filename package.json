@@ -10,5 +10,8 @@
     "keywords": [
         "typescript",
         "types"
-    ]
+    ],
+    "scripts": {
+        "prepublishOnly": "npm run patch"
+    }
 }
