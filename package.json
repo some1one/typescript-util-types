@@ -12,6 +12,6 @@
         "types"
     ],
     "scripts": {
-        "prepublishOnly": "npm version patch & timeout 5 /NOBREAK"
+        "pub": "npm version patch && npm publish"
     }
 }
