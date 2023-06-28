@@ -1,15 +1,16 @@
 //used some types from https://github.com/piotrwitek/utility-types
 export type AnyObject = Record<PropertyKey, any> & {};
 export type UnknownObject = Record<PropertyKey, unknown> & {};
-export type Constructor<T extends Function & {} = AnyObject & Function> = new (...args: any[]) => T;
-export type WithPrototype<C extends {} = {}, P extends {} = C> = C & { prototype: P };
-export type WithConstructorPrototype<C extends Constructor, P extends {} = C> = WithPrototype<C, P> & { constructor: Constructor<C> } & { prototype: P & { constructor: Constructor<C> } };
-export type ClassInstance<T extends new (...args: any) => any> = InstanceType<T> & WithConstructorPrototype<T>;
-export type Class<T extends _ClassFunction<T> | Constructor<T>> = T & _ClassFunction<T> & Constructor<T> & WithConstructorPrototype<T & Constructor<T>, T> & object;
-export type _ClassFunction<T extends _ClassFunction<T> | Constructor<T>> = (...args: any[]) => Class<T>;
-export type RecordClass<T extends _ClassFunction<T> | Constructor<T>> = Class<T> & AsRecord<T> & UnknownObject;
-export type AnyFunction = (...args: any[]) => any;
+export type AnyFunction = Function & ((...args: any[]) => any);
 export type UnknownFunction = (...args: unknown[]) => unknown;
+export type Constructor<T = any> = (new (...args: any) => T) & AnyFunction & AnyObject; 
+export type _ClassConstructor<T extends Constructor<T>> = (new (...args: ConstructorParameters<T>) => ClassInstance<T>) & AnyFunction & AnyObject;
+export type WithPrototype<P extends {} = any> = { prototype: P };
+export type WithConstructorPrototype<C extends AnyFunction & Constructor, P extends {} = any> = WithPrototype<P> & { constructor: Constructor<C> } & { prototype: P & { constructor: Constructor<C> } };
+export type ClassInstance<T extends AnyFunction & Constructor<T>> = InstanceType<T> & WithConstructorPrototype<_ClassConstructor<T>>;
+export type Class<T extends AnyFunction & Constructor<T>> = _ClassFunction<T> & _ClassConstructor<T> & WithConstructorPrototype<T & _ClassConstructor<T>, T> & object;
+export type _ClassFunction<T extends AnyFunction & Constructor<T>> = (...args: Parameters<T>) => ClassInstance<T>;
+export type RecordClass<T extends AnyFunction & Constructor<T>> = Class<T> & AsRecord<T> & UnknownObject;
 export type RecordsStartWith<T, S extends string> = {
     [K in keyof T as K extends `${S}${infer R}` ? R : never]: T[K]
 }
