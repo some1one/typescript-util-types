@@ -3,7 +3,7 @@ export type AnyObject = Record<PropertyKey, any> & {};
 export type UnknownObject = Record<PropertyKey, unknown> & {};
 export type AnyFunction = Function & ((...args: any[]) => any);
 export type UnknownFunction = (...args: unknown[]) => unknown;
-export type Constructor<T = any> = (new (...args: any) => T) & AnyFunction & AnyObject; 
+export type Constructor<T = any> = (new (...args: any) => T) & AnyFunction & AnyObject & { name: string };
 export type _ClassConstructor<T extends Constructor<T>> = (new (...args: ConstructorParameters<T>) => ClassInstance<T>) & AnyFunction & AnyObject;
 export type WithPrototype<P extends {} = any> = { prototype: P };
 export type WithConstructorPrototype<C extends AnyFunction & Constructor, P extends {} = any> = WithPrototype<P> & { constructor: Constructor<C> } & { prototype: P & { constructor: Constructor<C> } };
