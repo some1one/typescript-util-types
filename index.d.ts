@@ -4,12 +4,12 @@ export type UnknownObject = Record<PropertyKey, unknown> & {};
 export type AnyFunction = Function & ((...args: any[]) => any);
 export type UnknownFunction = (...args: unknown[]) => unknown;
 export type Constructor<T = any> = (new (...args: any) => T) & AnyFunction & AnyObject & { name: string };
-export type _ClassConstructor<T extends Constructor<T>> = (new (...args: ConstructorParameters<T>) => ClassInstance<T>) & AnyFunction & AnyObject;
+export type _ClassConstructor<T = any> = (new (...args: ConstructorParameters<Constructor<T>>) => ClassInstance<T>) & AnyFunction & AnyObject;
 export type WithPrototype<P extends {} = any> = { prototype: P };
 export type WithConstructorPrototype<C extends AnyFunction & Constructor, P extends {} = any> = WithPrototype<P> & { constructor: Constructor<C> } & { prototype: P & { constructor: Constructor<C> } };
-export type ClassInstance<T extends AnyFunction & Constructor<T>> = InstanceType<T> & WithConstructorPrototype<_ClassConstructor<T>>;
-export type Class<T extends AnyFunction & Constructor<T>> = _ClassFunction<T> & _ClassConstructor<T> & WithConstructorPrototype<T & _ClassConstructor<T>, T> & object;
-export type _ClassFunction<T extends AnyFunction & Constructor<T>> = (...args: Parameters<T>) => ClassInstance<T>;
+export type ClassInstance<T = any> = InstanceType<Constructor<T>> & WithConstructorPrototype<_ClassConstructor<T>>;
+export type Class<T = any> = _ClassFunction<T> & _ClassConstructor<T> & WithConstructorPrototype<T & _ClassConstructor<T>, T & object> & object;
+export type _ClassFunction<T = any> = (...args: Parameters<Constructor<T>>) => ClassInstance<T>;
 export type RecordClass<T extends AnyFunction & Constructor<T>> = Class<T> & AsRecord<T> & UnknownObject;
 export type AnyClass = Class<any>;
 export type AnyRecordClass = RecordClass<any>;
@@ -19,7 +19,7 @@ export type RecordsStartWith<T, S extends string> = {
 export type RecordsRemovePrefix<T, P extends string> = {
     [K in keyof T as K extends `${P}${infer R}` ? R : K]: T[K]
 }
-export type RecordsRemovePrefixAndUcapitalize<T, P extends string> = {
+export type RecordsRemovePrefixAndUncapitalize<T, P extends string> = {
     [K in keyof T as K extends `${P}${infer R}` ? Uncapitalize<R> : K]: T[K]
 }
 export type FunctionNames<T> = {
@@ -31,7 +31,7 @@ export type PropertyNames<T> = {
 export type RecordFunctions<T> = Pick<T, FunctionNames<T>>;
 export type RecordProperties<T> = Pick<T, PropertyNames<T>>;
 export type GetterFunctions<T> = RecordFunctions<RecordsStartWith<T, 'get'>>;
-export type GetterNames<T> = FunctionNames<RecordsRemovePrefixAndUcapitalize<GetterFunctions<T>, 'get'>>;
+export type GetterNames<T> = FunctionNames<RecordsRemovePrefixAndUncapitalize<GetterFunctions<T>, 'get'>>;
 export type AsRecord<T> = { [K in keyof T]: T[K] };
 /** Excludes all props of U from T for use in other types. Use OmitAll if you want to create a type like this.  */
 export type ExcludeAll<T, U> = { [P in Exclude<keyof T, keyof U>]?: never };
