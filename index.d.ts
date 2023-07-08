@@ -125,4 +125,10 @@ export type RequiredKeys<T> = {
  */
 export type OptionalKeys<T> = {
     [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
-  }[keyof T];
+}[keyof T];
+
+declare global {
+    interface Function {
+        bind<T extends AnyFunction>(this: T, thisArg: ThisParameterType<T>): T;
+    }
+}
