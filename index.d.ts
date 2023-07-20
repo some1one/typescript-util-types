@@ -127,6 +127,16 @@ export type OptionalKeys<T> = {
     [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
 }[keyof T];
 
+interface IDisposable {
+    get isDisposed(): boolean;
+    dispose(): void;
+}
+
+interface IAsyncDisposable {
+    get isDisposed(): boolean;
+    dispose(): Promise<void>;
+}
+
 declare global {
     interface Function {
         bind<T extends AnyFunction>(this: T, thisArg: ThisParameterType<T>): T;
