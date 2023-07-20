@@ -127,12 +127,12 @@ export type OptionalKeys<T> = {
     [K in keyof T]-?: {} extends Pick<T, K> ? K : never;
 }[keyof T];
 
-interface IDisposable {
+export interface IDisposable {
     get isDisposed(): boolean;
     dispose(): void;
 }
 
-interface IAsyncDisposable {
+export interface IAsyncDisposable {
     get isDisposed(): boolean;
     dispose(): Promise<void>;
 }
